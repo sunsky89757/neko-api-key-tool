@@ -146,7 +146,7 @@ const LogsTable = () => {
                 Toast.success('已复制：' + text);
                 return;
             }
-            
+
             // Fallback for Safari and older browsers
             const textArea = document.createElement('textarea');
             textArea.value = text;
@@ -156,7 +156,7 @@ const LogsTable = () => {
             document.body.appendChild(textArea);
             textArea.focus();
             textArea.select();
-            
+
             try {
                 document.execCommand('copy');
                 textArea.remove();
@@ -353,26 +353,26 @@ const LogsTable = () => {
             '详情': log.content,
         }));
         const csvString = '\ufeff' + Papa.unparse(csvData);
-        
+
         try {
             const blob = new Blob([csvString], { type: 'text/csv;charset=utf-8' });
             const url = URL.createObjectURL(blob);
             const link = document.createElement('a');
             link.href = url;
             link.download = 'data.csv';
-            
+
             // For Safari compatibility
             if (navigator.userAgent.indexOf('Safari') > -1 && navigator.userAgent.indexOf('Chrome') === -1) {
                 link.target = '_blank';
                 link.setAttribute('target', '_blank');
             }
-            
+
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
             setTimeout(() => URL.revokeObjectURL(url), 100);
         } catch (err) {
-            Toast.error('导出失败，请稍后重试');
+            Toast.error('Export failed, please try again later.');
             console.error('Export failed:', err);
         }
     };
@@ -386,7 +386,7 @@ const LogsTable = () => {
                     showClear
                     value={apikey}
                     onChange={(value) => setAPIKey(value)}
-                    placeholder="请输入要查询的令牌 sk-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+                    placeholder="Please input the token to query: sk-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
                     prefix={<IconSearch />}
                     suffix={
                         <Button
@@ -410,30 +410,30 @@ const LogsTable = () => {
                 <Collapse activeKey={activeKeys} onChange={(keys) => setActiveKeys(keys)}>
                     {process.env.REACT_APP_SHOW_BALANCE === "true" && (
                         <Panel
-                            header="令牌信息"
+                            header="Token Information"
                             itemKey="1"
                             extra={
                                 <Button icon={<IconCopy />} theme='borderless' type='primary' onClick={(e) => copyTokenInfo(e)} disabled={!activeTabData.tokenValid}>
-                                    复制令牌信息
+                                    Copy Token Information
                                 </Button>
                             }
                         >
                             <Spin spinning={loading}>
                                 <div style={{ marginBottom: 16 }}>
                                     <Text type="secondary">
-                                        令牌总额：{activeTabData.balance === 100000000 ? "无限" : activeTabData.balance === "未知" || activeTabData.balance === undefined ? "未知" : `${activeTabData.balance.toFixed(3)}`}
+                                        Total（总额）：{activeTabData.balance === 100000000 ? "无限" : activeTabData.balance === "未知" || activeTabData.balance === undefined ? "未知" : `${activeTabData.balance.toFixed(3)}`}
                                     </Text>
                                     <br /><br />
                                     <Text type="secondary">
-                                        剩余额度：{activeTabData.balance === 100000000 ? "无限制" : activeTabData.balance === "未知" || activeTabData.usage === "未知" || activeTabData.balance === undefined || activeTabData.usage === undefined ? "未知" : `${(activeTabData.balance - activeTabData.usage).toFixed(3)}`}
+                                        Remaining（剩余）：{activeTabData.balance === 100000000 ? "无限制" : activeTabData.balance === "未知" || activeTabData.usage === "未知" || activeTabData.balance === undefined || activeTabData.usage === undefined ? "未知" : `${(activeTabData.balance - activeTabData.usage).toFixed(3)}`}
                                     </Text>
                                     <br /><br />
                                     <Text type="secondary">
-                                        已用额度：{activeTabData.balance === 100000000 ? "不进行计算" : activeTabData.usage === "未知" || activeTabData.usage === undefined ? "未知" : `${activeTabData.usage.toFixed(3)}`}
+                                        Used（已用）：{activeTabData.balance === 100000000 ? "不进行计算" : activeTabData.usage === "未知" || activeTabData.usage === undefined ? "未知" : `${activeTabData.usage.toFixed(3)}`}
                                     </Text>
                                     <br /><br />
                                     <Text type="secondary">
-                                        有效期至：{activeTabData.accessdate === 0 ? '永不过期' : activeTabData.accessdate === "未知" ? '未知' : renderTimestamp(activeTabData.accessdate)}
+                                        Expires（有效期至）：{activeTabData.accessdate === 0 ? '永不过期' : activeTabData.accessdate === "未知" ? '未知' : renderTimestamp(activeTabData.accessdate)}
                                     </Text>
                                 </div>
                             </Spin>
@@ -441,13 +441,13 @@ const LogsTable = () => {
                     )}
                     {process.env.REACT_APP_SHOW_DETAIL === "true" && (
                         <Panel
-                            header="调用详情"
+                            header="Call Details"
                             itemKey="2"
                             extra={
                                 <div style={{ display: 'flex', alignItems: 'center' }}>
-                                    <Tag shape='circle' color='green' style={{ marginRight: 5 }}>计算汇率：$1 = 50 0000 tokens</Tag>
+                                    <Tag shape='circle' color='green' style={{ marginRight: 5 }}>Exchange Rate（计算汇率）：$1 = 50 0000 tokens</Tag>
                                     <Button icon={<IconDownload />} theme='borderless' type='primary' onClick={(e) => exportCSV(e)} disabled={!activeTabData.tokenValid || activeTabData.logs.length === 0}>
-                                        导出为CSV文件
+                                        Export as CSV File
                                     </Button>
                                 </div>
                             }
@@ -462,7 +462,7 @@ const LogsTable = () => {
                                         showSizeChanger: true,
                                         pageSizeOpts: [10, 20, 50, 100],
                                         onPageSizeChange: (pageSize) => setPageSize(pageSize),
-                                        showTotal: (total) => `共 ${total} 条`,
+                                        showTotal: (total) => `Total: ${total} Entries`,
                                         showQuickJumper: true,
                                         total: activeTabData.logs.length,
                                         style: { marginTop: 12 },
